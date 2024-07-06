@@ -1,0 +1,64 @@
+name: Go
+
+on:
+  push:
+    branches: ["master"]
+  pull_request:
+    branches: ["master"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "stable"
+
+      - name: Build
+        run: go build -v ./...
+
+  build-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "stable"
+
+      - name: Build go snippets in readme
+        run: |
+          mkdir -p ~/.local/bin/
+          wget -O ~/.local/bin/lintdown.sh https://raw.githubusercontent.com/ChillerDragon/lintdown.sh/master/lintdown.sh
+          chmod +x ~/.local/bin/lintdown.sh
+          lintdown.sh README.md
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "stable"
+
+      - name: Test
+        run: go test -v -race -count=1 ./...
+
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "stable"
+
+      - name: Format
+        run: diff -u <(echo -n) <(gofmt -d ./)
