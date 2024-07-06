@@ -173,6 +173,7 @@ func asyncReadLine(ctx context.Context, wg *sync.WaitGroup, conn *econ.Conn, lin
 
 func asyncWriteLine(ctx context.Context, wg *sync.WaitGroup, conn *econ.Conn, commandChan <-chan string) {
 	defer func() {
+		log.Println("closing command writer")
 		wg.Done()
 		log.Println("command writer closed")
 	}()
@@ -183,9 +184,17 @@ func asyncWriteLine(ctx context.Context, wg *sync.WaitGroup, conn *econ.Conn, co
 		case <-ctx.Done():
 			log.Printf("closing command writer: %v", ctx.Err())
 			return
-		case command := <-commandChan:
+		case command, ok := <-commandChan:
+			if !ok {
+				log.Println("command channel closed")
+				return
+			}
 			err = conn.WriteLine(command)
 			if err != nil {
+				if errors.Is(err, context.Canceled) {
+					log.Printf("closing command writer: %v", ctx.Err())
+					return
+				}
 				log.Printf("failed to write line: %v", err)
 			}
 		}
