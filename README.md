@@ -1,5 +1,7 @@
 # econ
 
+[![Go Reference](https://pkg.go.dev/badge/github.com/teeworlds-go/econ.svg)](https://pkg.go.dev/github.com/teeworlds-go/econ) [![Go Report Card](https://goreportcard.com/badge/github.com/teeworlds-go/econ)](https://goreportcard.com/report/github.com/teeworlds-go/econ)
+
 econ is a library that can be used to connect to Teeworlds external consoles in order to introduce some kind of automation based on the server's output.
 
 ## Installation
