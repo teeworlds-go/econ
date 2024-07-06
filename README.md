@@ -144,7 +144,6 @@ func tryWrite(ctx context.Context, commandChan chan<- string, command string) (o
 
 func asyncReadLine(ctx context.Context, wg *sync.WaitGroup, conn *econ.Conn, lineChan chan<- string) {
 	defer func() {
-		log.Println("closing line reader")
 		close(lineChan)
 		wg.Done()
 		log.Println("line reader closed")
@@ -175,7 +174,6 @@ func asyncReadLine(ctx context.Context, wg *sync.WaitGroup, conn *econ.Conn, lin
 
 func asyncWriteLine(ctx context.Context, wg *sync.WaitGroup, conn *econ.Conn, commandChan <-chan string) {
 	defer func() {
-		log.Println("closing command writer")
 		wg.Done()
 		log.Println("command writer closed")
 	}()
